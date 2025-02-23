@@ -64,12 +64,13 @@ h2 {
 }
 
 /* cards  */
-.card {
-    width: 25%; 
+.card-link {
+    width: 25%;
     border-radius: 12px;
     overflow: hidden;
     background: white;
     box-shadow: 0 4px 8px var(--shadow);
+    text-decoration: none;
 }
 
 .card-header {
