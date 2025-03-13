@@ -40,13 +40,7 @@ const Signup = () => {
 
   return (
       <div className="container">
-          <img className="header-image" alt="Header" />
-          <div className="navbar">
-              <div className="logo-container">
-                  <div className="logo"></div>
-                  <div className="logo-text">SyncBoard</div>
-              </div>
-          </div>
+         
           <div className="welcome-text">Welcome to SyncBoard!</div>
           <form className="signup-container" onSubmit={handleSubmit}>
               <div className="login-title">Sign Up</div>
@@ -63,9 +57,11 @@ const Signup = () => {
                   </div>
               ))}
               <button className="sign-in-btn" type="submit">Sign Up</button>
-              <button className="sign-up-btn" type="button" onClick={() => window.location.href = './login.html'}>
-                  Already have an account? Log in!
-              </button>
+              <ReactRouterDOM.Link to="/">
+               <button className="sign-up-btn" type="button">
+                     Already have an account? Log in!
+               </button>
+              </ReactRouterDOM.Link>
           </form>
       </div>
   );
