@@ -1,7 +1,3 @@
-// NOTE: the calendar doesn't display new events/changes and I'm not sure why, but I think we can work around it when we incorporate the DB
-// ex: when an event is created or edited we edit/create the db entry
-// then just autorefresh and rerender the calendar with the stored db info (since it renders on startup, see comment below)
-
 // creating new events
 const CreateEventModal = ({ isOpen, onClose, onSubmit }) => {
     const [title, setTitle] = React.useState('');
@@ -47,55 +43,63 @@ const CreateEventModal = ({ isOpen, onClose, onSubmit }) => {
   };
   
   // editing existing events
-  const EditEventModal = ({ isOpen, onClose, onSubmit, eventData }) => {
-    const [title, setTitle] = React.useState(eventData ? eventData.title : '');
-    const [startTime, setStartTime] = React.useState(
-      eventData && eventData.start instanceof Date ? eventData.start.toISOString().slice(11, 16) : '12:00'
-    );
-    const [endTime, setEndTime] = React.useState(
-      eventData && eventData.end instanceof Date ? eventData.end.toISOString().slice(11, 16) : '13:00'
-    );
-  
-    const handleSubmit = () => {
-      if (title && startTime && endTime) {
-        const dateStr = eventData && eventData.start instanceof Date ? eventData.start.toISOString().slice(0, 10) : '';
-        const startDateTime = `${dateStr}T${startTime}`;
-        const endDateTime = `${dateStr}T${endTime}`;
-        onSubmit({ title, startDateTime, endDateTime });
-        onClose();
-      }
-    };
-  
-    if (!isOpen) return null;
-  
-    return (
-      <div className="modal-overlay">
-        <div className="modal-content">
-          <h2>Edit Event</h2>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Event Title"
-          />
-          <input
-            type="text"
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
-            placeholder="Start Time (HH:MM)"
-          />
-          <input
-            type="text"
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
-            placeholder="End Time (HH:MM)"
-          />
-          <button onClick={handleSubmit}>Submit</button>
-          <button onClick={onClose}>Cancel</button>
-        </div>
-      </div>
-    );
-  };  
+  const EditEventModal = ({ isOpen, onClose, onSubmit, onDelete, eventData }) => {
+      const [title, setTitle] = React.useState(eventData ? eventData.title : '');
+      const [startTime, setStartTime] = React.useState(
+          eventData && eventData.start instanceof Date ? eventData.start.toISOString().slice(11, 16) : '12:00'
+      );
+      const [endTime, setEndTime] = React.useState(
+          eventData && eventData.end instanceof Date ? eventData.end.toISOString().slice(11, 16) : '13:00'
+      );
+
+      const handleSubmit = () => {
+          if (title && startTime && endTime) {
+              const dateStr = eventData && eventData.start instanceof Date ? eventData.start.toISOString().slice(0, 10) : '';
+              const startDateTime = `${dateStr}T${startTime}`;
+              const endDateTime = `${dateStr}T${endTime}`;
+              onSubmit({ title, startDateTime, endDateTime });
+              onClose();
+          }
+      };
+
+      const handleDelete = () => {
+          if (eventData) {
+              onDelete(eventData);
+          }
+      };
+
+      if (!isOpen) return null;
+
+      return (
+          <div className="modal-overlay">
+              <div className="modal-content">
+                  <h2>Edit Event</h2>
+                  <input
+                      type="text"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Event Title"
+                  />
+                  <input
+                      type="text"
+                      value={startTime}
+                      onChange={(e) => setStartTime(e.target.value)}
+                      placeholder="Start Time (HH:MM)"
+                  />
+                  <input
+                      type="text"
+                      value={endTime}
+                      onChange={(e) => setEndTime(e.target.value)}
+                      placeholder="End Time (HH:MM)"
+                  />
+                  <button onClick={handleSubmit}>Submit</button>
+                  <button onClick={onClose}>Cancel</button>
+                  {/* Delete button */}
+                  <button onClick={handleDelete}>Delete Event</button>
+              </div>
+          </div>
+      );
+  };
 
   // actual calendar component
   const CalendarComponent = () => {
@@ -180,13 +184,14 @@ const CreateEventModal = ({ isOpen, onClose, onSubmit }) => {
         {/* edit event modal */}
         {isEditModalOpen && (
           <EditEventModal
-            isOpen={isEditModalOpen}
-            onClose={() => setEditModalOpen(false)}
-            onSubmit={handleEditSubmit} 
-            eventData={eventData}
-            type="edit"
+              isOpen={isEditModalOpen}
+              onClose={() => setEditModalOpen(false)}
+              onSubmit={handleEditSubmit}
+              onDelete={handleDelete} 
+              eventData={eventData}
+              type="edit"
           />
-        )}
+      )}
       </div>
     );
   };
