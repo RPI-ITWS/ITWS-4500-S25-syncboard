@@ -61,6 +61,7 @@
    - change over to VM URL's 
    - set to true when on VM: cookie: { secure: false }  
    - fix browser errors when going back and fourth between pages 
+   - sudo npm i
 
 # App Conventions/Descriptions
    - Class data would be scrapped from somewhere so that the professor doesn't have to hardcode that in. 
